@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 
 Console.WriteLine("hello");
+using(var sr = new StreamWriter("k.txt"))
+    sr.WriteLine("aho");
 
 //muを一定にする
 //K=50
