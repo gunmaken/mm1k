@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 
+Console.WriteLine("hello");
+
 //muを一定にする
 //K=50
 //FinishTIme=10000理想(100000)
 //廃棄率(対数)
 
-record Element
+/*record Element
 {
     public double StartStayTime { get; set; } = default; //パケットが待機し始めた時刻
     public double StaySystemTime { get; set; } = default; //パケットのシステム滞在時間
@@ -308,4 +310,4 @@ static class Test
 
         return 0;
     }
-}
+}*/
