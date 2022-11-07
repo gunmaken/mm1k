@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 
-Console.WriteLine("hello");
-using(var sr = new StreamWriter("k.txt"))
-    sr.WriteLine("aho");
-
 //muを一定にする
 //K=50
 //FinishTIme=10000理想(100000)
 //廃棄率(対数)
 
-/*record Element
+record Element
 {
     public double StartStayTime { get; set; } = default; //パケットが待機し始めた時刻
     public double StaySystemTime { get; set; } = default; //パケットのシステム滞在時間
@@ -262,6 +258,7 @@ static class Test
             for (var i = 0; i < 7; i++)
             {
                 sr.WriteLine($"{Math.Round(0.7 + i * 0.05)}, {averagePacket[i] / 10.0}, {averageTime[i] / 10.0}, {averageDisposePercentage[i] / 10.0}");
+                Console.WriteLine($"{Math.Round(0.7 + i * 0.05)}, {averagePacket[i] / 10.0}, {averageTime[i] / 10.0}, {averageDisposePercentage[i] / 10.0}");
             }
         }
         return;
@@ -312,4 +309,4 @@ static class Test
 
         return 0;
     }
-}*/
+}
