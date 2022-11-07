@@ -40,6 +40,9 @@ class MM1K
     private int _tableCount; //イベントテーブルのインデックス
     List<Element> Elements; //パケットのリスト
     double _rho;
+    public double AveragePacket { get; private set; }
+    public double AverageTime { get; private set; }
+    public double AverageDisposePercentage { get; private set; }
 
     //コンストラクタでフィールドに代入
     public MM1K(double lamda, double mu, int k, double finishTime, double startTime)
@@ -181,19 +184,14 @@ class MM1K
     public void Report()
     {
         var time = FinishTime - StartTime;
-        var averagePacket = Elements.Sum(x => x.StaySystemTime) / time;
-        var averageTime = Elements.Sum(x => x.StaySystemTime) / Elements.Count();
-        var averageDisposePercentage = (double)Elements.Count(x => x.StaySystemTime == 0.0) / Elements.Count();
+        AveragePacket = Elements.Sum(x => x.StaySystemTime) / time;
+        AverageTime = Elements.Sum(x => x.StaySystemTime) / Elements.Count();
+        AverageDisposePercentage = (double)Elements.Count(x => x.StaySystemTime == 0.0) / Elements.Count();
 
         Console.WriteLine();
-        Console.WriteLine($"平均パケット数: {averagePacket}");
-        Console.WriteLine($"平均システム滞在時間: {averageTime}");
-        Console.WriteLine($"パケット廃棄率: {averageDisposePercentage}");
-        
-        using (var r = new StreamWriter("out.csv", true))
-        {
-            r.WriteLine($"{averagePacket} {averageTime} {averageDisposePercentage}");
-        }
+        Console.WriteLine($"平均パケット数: {AveragePacket}");
+        Console.WriteLine($"平均システム滞在時間: {AverageTime}");
+        Console.WriteLine($"パケット廃棄率: {AverageDisposePercentage}");
     }
 
     public void Theoretical()
@@ -239,12 +237,28 @@ static class Test
 
     static void Main(string[] args)
     {
-        for (var i = 0.7; Math.Round(i, 2) <= 1.0; i += 0.05)
+        var averagePacket = Enumerable.Repeat(0.0, 7).ToList();
+        var averageTime = Enumerable.Repeat(0.0, 7).ToList();
+        var averageDisposePercentage = Enumerable.Repeat(0.0, 7).ToList();
+
+        for (var i = 0; i < 10; i++)
         {
-            var a = new MM1K(Math.Round(i, 2), 1.0, 50, 100000, 0);
-            a.StartSimulation();
-            a.Report();
-            a.Theoretical();
+            for (var j = 0; j < 7; j++)
+            {
+                var a = new MM1K(Math.Round(0.7 + j * 0.05, 2), 1.0, 50, 100000, 0);
+                a.StartSimulation();
+                a.Report();
+                averagePacket[j] += a.AveragePacket;
+                averageTime[j] += a.AverageTime;
+                averageDisposePercentage[j] += a.AverageDisposePercentage;
+            }
+        }
+        using(var sr = new StreamWriter("out.csv"))
+        {
+            for (var i = 0; i < 7; i++)
+            {
+                sr.WriteLine($"{Math.Round(0.7 + i * 0.05)}, {averagePacket[i] / 10.0}, {averageTime[i] / 10.0}, {averageDisposePercentage[i] / 10.0}");
+            }
         }
         return;
     }
